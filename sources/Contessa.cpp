@@ -12,11 +12,12 @@ namespace coup
     {
         // check if the player that block is the Assassin - he is the only one that can blocked by Contessa
         string checkRole = p._roleName;
-        if (checkRole != "Assassin" || p._lastAct != "coup")
+        if (checkRole != "Assassin" || p._lastAct != "murder")
         {
             throw domain_error("Contessa can't block this player");
             return;
         }
+
         p._enemy->_alive = 1; // restore the blocked player name to the list -- need to change it
         p._lastAct = "";
         p._enemy = NULL;

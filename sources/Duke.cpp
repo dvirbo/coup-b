@@ -15,7 +15,7 @@ namespace coup
             throw domain_error("Duke can block only foreign_aid");
             return;
         }
-
+        
         p._coins -= 2;
         p._lastAct = "";
     }
@@ -27,6 +27,7 @@ namespace coup
             throw domain_error("this is not the player turn");
             return;
         }
+        this->_game->round(); // change the curr player turn:
         this->_lastAct = "";
         this->_coins += 3;
     }

@@ -17,7 +17,9 @@ namespace coup
 
     public:
         Game();
-        unsigned int _curr;        // index of the current player
+         unsigned int _init;  // index that indicate if the play is start
+        unsigned int _curr; // index of the current player
+        unsigned int playersAmount;
         vector<Player *> _list;    // list that contain pointer to all the Player object in the game
         void addPlayer(Player *p); // add player to the game
         string turn();             // Returns the name of the player whose turn to play

@@ -23,7 +23,7 @@ namespace coup
         void coup(Player &other);
         string role() const; // return the role of the player
         int coins() const;   // return the numbers of coins of the
-        bool check_turn();
+        bool check_turn() const;
        void blocked();
     };
 

@@ -18,59 +18,53 @@ namespace coup
     }
 
     // this function check if this is the turn of the player
-    bool Player::check_turn()
+    bool Player::check_turn() const
     {
+        bool flag = false;
         string tmp = this->_game->turn();
         if (this->_name == tmp)
-        // move to the next to prevent another call
         {
-            this->_game->round();
-            if (this->_coins == MUSTCOUP)
-            {
-                for (Player *p : this->_game->_list)
-                {
-                    if (this->_name != p->_name)
-                    {
-                        Player &p1 = *p;
-                        this->coup(p1);
-                    }
-                }
-            }
-            return true;
+            flag = true;
         }
-        return false;
+        return flag;
     }
 
     void Player::income()
     {
-        if (check_turn())
+        if (!check_turn())
         {
-            this->_coins += 1;
-            // change the curr player turn:
-            this->_lastAct = "income";
-            return;
+            string ans = "this is not " + this->_name + " turn";
+            throw domain_error(ans);
         }
-        string ans = "this is not "+ this->_name +" turn";
-        throw domain_error(ans);
+        this->_game->round(); // change the curr player turn:
+        this->_coins += 1;
+        // change the curr player turn:
+        this->_lastAct = "income";
     }
 
     void Player::foreign_aid()
     {
-        if (check_turn())
+        if (!check_turn())
         {
-            this->_coins += 2;
-            // change the curr player turn:
-            this->_lastAct = "foreign_aid";
-            return;
+            string ans = "this is not " + this->_name + " turn";
+            throw domain_error(ans);
         }
-        throw domain_error("this is not the player turn");
+        if (this->_coins > MUSTCOUP)
+        {
+            throw domain_error("player has more than 10 coins");
+        }
+        this->_game->round(); // change the curr player turn:
+        this->_coins += 2;
+        this->_lastAct = "foreign_aid";
     }
 
     void Player::coup(Player &other)
     {
         if (!check_turn())
         {
-            throw domain_error("the player did not exist in the list");
+            string ans = "this is not " + this->_name + " turn";
+            throw domain_error(ans);
+            return;
         }
 
         if (this->_coins < COST)
@@ -79,18 +73,16 @@ namespace coup
             return;
         }
 
-        for (Player *p : this->_game->_list)
+        if (other._alive == 0)
         {
-            if (p->_name != other._name)
-            { //  equals
-                other._alive = 0;
-                this->_coins -= COST;
-                this->_lastAct = "coup";
-                return;
-            }
+            throw runtime_error("the player is dead");
         }
 
-        throw domain_error("this is not the player turn");
+        other._alive = 0;
+        this->_coins -= COST;
+        this->_lastAct = "coup";
+        this->_enemy = &other;
+        this->_game->round();
     }
 
     string Player::role() const
